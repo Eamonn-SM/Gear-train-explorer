@@ -1,0 +1,17 @@
+gear-train-explorer/
+│
+├── package.json
+├── vite.config.ts
+├── tsconfig.json
+├── src/
+│   ├── main.tsx
+│   ├── App.tsx
+│   ├── components/
+│   │   ├── Gear.tsx
+│   │   ├── GearTrain.tsx
+│   │   ├── ControlPanel.tsx
+│   │   ├── ResultsPanel.tsx
+│   │   └── WorkedSolution.tsx
+│   ├── styles/
+│   │   └── index.css
+│   └── types.ts
