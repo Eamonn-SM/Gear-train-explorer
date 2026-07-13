@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html><head><meta charset='UTF-8'><title>Gear Ratio Calculator V3</title>
+<style>
+body{font-family:Arial;margin:20px;background:#f4f8fc} .card{background:#fff;padding:15px;border-radius:12px;margin:10px 0} .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px}
+input{width:100%;padding:8px}.gearinfo{display:flex;gap:20px;justify-content:center}.gearcard{text-align:center}
+svg{width:100%;height:420px;background:white;border:1px solid #ccc}
+</style></head><body>
+<h1>Gear Ratio Calculator V3</h1>
+<div class='card grid'>
+<div><label>Driver Teeth</label><input id='driver' type='number' value='20'></div>
+<div><label>Idler Teeth (0=off)</label><input id='idler' type='number' value='30'></div>
+<div><label>Driven Teeth</label><input id='driven' type='number' value='40'></div>
+<div><label>Input RPM</label><input id='rpm' type='number' value='120'></div>
+<div><label>Input Torque</label><input id='torque' type='number' value='10'></div>
+</div>
+<div class='card'><svg id='svg' viewBox='0 0 1000 420'></svg></div>
+<div class='card'><h3>Worked Solution</h3><pre id='worked'></pre></div>
+<script>
+function gearPath(cx,cy,r,t){let p='';for(let i=0;i<t*2;i++){let a=i*Math.PI/t;let rr=i%2?r*1.12:r;let x=cx+Math.cos(a)*rr,y=cy+Math.sin(a)*rr;p+=(i?'L':'M')+x+' '+y;}return p+'Z';}
+function draw(){let d=+driver.value,id=+idler.value,dr=+driven.value,rpmv=+rpm.value,tq=+torque.value;let ratio=dr/d,outrpm=rpmv/ratio,outtq=tq*ratio;
+worked.textContent=`Gear Ratio = ${dr} ÷ ${d} = ${ratio.toFixed(2)}:1\nOutput RPM = ${rpmv} ÷ ${ratio.toFixed(2)} = ${outrpm.toFixed(2)}\nOutput Torque = ${tq} × ${ratio.toFixed(2)} = ${outtq.toFixed(2)} Nm`;
+let gears=[d]; if(id>0) gears.push(id); gears.push(dr); let x=180,cy=180,html='';
+for(let i=0;i<gears.length;i++){let r=gears[i]*2; let dir=i%2==0?1:-1; html+=`<g style="transform-origin:${x}px ${cy}px;animation:s${dir>0?'1':'2'} ${Math.max(.5,60/Math.max(1,(i==0?rpmv:outrpm)))}s linear infinite"><path d='${gearPath(x,cy,r,Math.max(10,gears[i]))}' fill='${i==0?'#bde':i==gears.length-1?'#fdc':'#ddd'}' stroke='#333'/></g>`; html+=`<text x='${x}' y='${cy+r+35}' text-anchor='middle'>${gears[i]} teeth</text>`; if(i<gears.length-1) x+=r+gears[i+1]*2; }
+svg.innerHTML=`<style>@keyframes s1{from{transform:rotate(0)}to{transform:rotate(360deg)}}@keyframes s2{from{transform:rotate(360deg)}to{transform:rotate(0)}}</style>`+html;
+}
+['driver','idler','driven','rpm','torque'].forEach(id=>document.getElementById(id).oninput=draw); draw();
+</script></body></html>
